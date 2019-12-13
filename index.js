@@ -18,6 +18,7 @@ class ObjectId {
 }
 
 const data = {}
+let dataPath
 
 module.exports = {
     Schema,
@@ -79,7 +80,7 @@ module.exports = {
                 else
                     data[name][index] = { ...this.object }
 
-                await fs.writeFile(`${name}.json`, JSON.stringify(data[name], null, 4))
+                await fs.writeFile(`${dataPath}/${name}.json`, JSON.stringify(data[name], null, 4))
 
                 return this
             }
@@ -112,9 +113,11 @@ module.exports = {
         }
     },
 
-    async connect() {
+    async connect(path = '.') {
+        dataPath = path
+
         for (const key in data) {
-            const path = `${key}.json`
+            const path = `${dataPath}/${key}.json`
             try {
                 await fs.access(path)
 
