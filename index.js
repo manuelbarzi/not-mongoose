@@ -1,130 +1,135 @@
 const validate = require('./validate')
 const fs = require('fs').promises
+const path = require('path')
+const uuid = require('uuid/v4')
 
 class Schema {
-    constructor(rules) {
-        this.rules = rules
-    }
+	constructor(properties) {
+		this.properties = properties
+	}
 }
 
 class ObjectId {
-    constructor(id) {
-        this.value = id
-    }
+	constructor(id) {
+		this.value = id
+	}
 
-    toString() {
-        return this.value.toString()
-    }
+	toString() {
+		return this.value.toString()
+	}
 }
 
-const data = {}
-let dataPath
+const collections = {}
+let database
 
 module.exports = {
-    Schema,
+	Schema,
 
-    ObjectId,
+	ObjectId,
 
-    model: function (name, schema) {
-        validate.string(name)
-        validate.string.notVoid('name', name)
-        validate.instanceOf(Schema, schema)
+	model: function (name, schema) {
+		validate.string(name)
+		validate.string.notVoid('name', name)
+		validate.instanceOf(Schema, schema)
 
-        data[name] = []
+		collections[name] = []
 
-        return class X {
-            constructor(object) {
-                for (const key in schema.rules) {
-                    const rules = schema.rules[key]
+		return class Model {
+			constructor(document) {
+				for (const property in schema.properties) {
+					const rules = schema.properties[property]
 
-                    if (rules.default != undefined) object[key] = rules.default
+					if (rules.default != undefined) document[property] = rules.default
 
-                    if (rules.required && object[key] == undefined) throw Error(`${key} is required but not present`)
+					if (rules.required && document[property] == undefined) throw Error(`${property} is required but not present`)
 
-                    if (object[key] != undefined && object[key].constructor !== rules.type) throw Error(`${key} is not of type ${rules.type}`)
-                }
+					if (document[property] != undefined && document[property].constructor !== rules.type) throw Error(`${property} is not of type ${rules.type}`)
+				}
 
-                if (!object._id)
-                    object._id = new ObjectId(`${Date.now()}`)
+				if (!document._id)
+					document._id = new ObjectId(uuid())
 
-                this.object = object
+				this.document = document
 
-                Object.defineProperty(this, '_id', {
-                    set(value) {
-                        this.object._id = value
-                    },
+				Object.defineProperty(this, '_id', {
+					set(value) {
+						this.document._id = value
+					},
 
-                    get() {
-                        return this.object._id
-                    }
-                })
+					get() {
+						return this.document._id
+					}
+				})
 
-                for (const key in schema.rules) {
-                    Object.defineProperty(this, key, {
-                        set(value) {
-                            this.object[key] = value
-                        },
+				for (const property in schema.properties) {
+					Object.defineProperty(this, property, {
+						set(value) {
+							this.document[property] = value
+						},
 
-                        get() {
-                            return this.object[key]
-                        }
-                    })
-                }
-            }
+						get() {
+							return this.document[property]
+						}
+					})
+				}
+			}
 
-            async save() {
-                const index = data[name].findIndex(({ _id }) => _id.toString() === this.object._id.toString())
+			async save() {
+				const collection = collections[name]
 
-                if (index < 0)
-                    data[name].push({ ...this.object })
-                else
-                    data[name][index] = { ...this.object }
+				const index = collection.findIndex(({ _id }) => _id.toString() === this.document._id.toString())
 
-                await fs.writeFile(`${dataPath}/${name}.json`, JSON.stringify(data[name], null, 4))
+				if (index < 0)
+					collection.push({ ...this.document })
+				else
+					collection[index] = { ...this.document }
 
-                return this
-            }
+				await fs.writeFile(path.join(database, `${name}.json`), JSON.stringify(collection, null, 4))
 
-            static findById(id) {
-                return new X({ ...data[name].find(object => object._id.toString() === id) })
-            }
+				return this
+			}
 
-            get id() {
-                return this.object._id.toString()
-            }
+			static findById(id) {
+				return new Model({ ...collections[name].find(object => object._id.toString() === id) })
+			}
 
-            static get name() {
-                return name
-            }
+			get id() {
+				return this.document._id.toString()
+			}
 
-            populate(key) {
-                const rules = schema.rules[key]
+			static get name() {
+				return name
+			}
 
-                if (rules && rules.ref) {
-                    const values = data[rules.ref]
+			populate(property) {
+				const properties = schema.properties[property]
 
-                    if (values && values.length) {
-                        const value = values.find(({ _id }) => _id.toString() === this[key].toString())
+				if (properties && properties.ref) {
+					const collection = collections[properties.ref]
 
-                        this[key] = { ...value }
-                    }
-                }
-            }
-        }
-    },
+					if (collection && collection.length) {
+						const document = collection.find(({ _id }) => _id.toString() === this[property].toString())
 
-    async connect(path = '.') {
-        dataPath = path
+						this[property] = { ...document }
+					}
+				}
+			}
+		}
+	},
 
-        for (const key in data) {
-            const path = `${dataPath}/${key}.json`
-            try {
-                await fs.access(path)
+	async connect(folder = '.') {
+		database = folder
 
-                data[key] = JSON.parse(await fs.readFile(path))
-            } catch (error) {
-                // noop
-            }
-        }
-    }
+		for (const name in collections) {
+			const file = path.join(database, `${name}.json`)
+
+			try {
+				await fs.access(file)
+
+				collections[name] = JSON.parse(await fs.readFile(file))
+			} catch (error) {
+				// noop
+			}
+		}
+	}
 }

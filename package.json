@@ -12,5 +12,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/manuelbarzi/mongoloose.git"
+  },
+  "dependencies": {
+    "uuid": "^3.3.3"
   }
 }
