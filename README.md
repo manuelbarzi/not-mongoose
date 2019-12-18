@@ -1,10 +1,10 @@
-# Fake Mongoose that stores data in local JSON files
+# Simple remake of Mongoose that stores data in local JSON files
 
 ## Usage
 
 ```js
-const mongoloose = require('mongoloose')
-const { Schema, ObjectId, model } = mongoloose 
+const mongoose = require('not-mongoose')
+const { Schema, ObjectId, model } = mongoose 
 
 const User = model('User', new Schema({
     username: {
@@ -46,7 +46,7 @@ const Task = model('Task', new Schema({
 
 ;(async () => {
     try {
-        await mongoloose.connect() // if you want to locate database in a different folder just pass a folder path here (ex: mongoloose.connect('path-to-my-database-folder')
+        await mongoose.connect() // if you want to locate database in a different folder just pass a folder path here (ex: mongoose.connect('path-to-my-database-folder')
 
         const user = new User({ username: 'peter', password: '123', date: new Date })
 

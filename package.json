@@ -1,19 +1,24 @@
 {
-  "name": "mongoloose",
-  "version": "1.0.4",
-  "description": "",
+  "name": "not-mongoose",
+  "version": "1.0.0",
+  "description": "## Usage",
   "main": "index.js",
+  "dependencies": {
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manuelbarzi/not-mongoose.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/manuelbarzi/mongoloose.git"
+  "bugs": {
+    "url": "https://github.com/manuelbarzi/not-mongoose/issues"
   },
-  "dependencies": {
-    "uuid": "^3.3.3"
-  }
+  "homepage": "https://github.com/manuelbarzi/not-mongoose#readme"
 }
