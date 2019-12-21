@@ -1,7 +1,7 @@
 {
   "name": "not-mongoose",
-  "version": "1.0.0",
-  "description": "## Usage",
+  "version": "1.0.1",
+  "description": "Simple remake of Mongoose that stores data in local JSON files",
   "main": "index.js",
   "dependencies": {
     "uuid": "^3.3.3"
@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/manuelbarzi/not-mongoose.git"
   },
-  "keywords": [],
+  "keywords": ["not", "mongoose", "not-mongoose", "odm", "mongo", "simple", "remake"],
   "author": "",
   "license": "ISC",
   "bugs": {

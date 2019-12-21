@@ -1,4 +1,4 @@
-# Simple remake of Mongoose that stores data in local JSON files
+# Simple remake of [Mongoose](https://mongoosejs.com/) that stores data in local JSON files
 
 ## Usage
 
