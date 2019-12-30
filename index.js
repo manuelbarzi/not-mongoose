@@ -89,7 +89,7 @@ module.exports = {
 				return this
 			}
 
-			static findById(id) {
+			static async findById(id) {
 				return new Model({ ...collections[name].find(object => object._id.toString() === id) })
 			}
 
@@ -101,7 +101,7 @@ module.exports = {
 				return name
 			}
 
-			populate(property) {
+			async populate(property) {
 				const properties = schema.properties[property]
 
 				if (properties && properties.ref) {
@@ -113,12 +113,20 @@ module.exports = {
 						this[property] = { ...document }
 					}
 				}
+
+				return this
 			}
 		}
 	},
 
 	async connect(folder = '.') {
 		database = folder
+
+		try {
+			await fs.access(database)
+		} catch(error) {
+			await fs.mkdir(database, { recursive: true })
+		}
 
 		for (const name in collections) {
 			const file = path.join(database, `${name}.json`)

@@ -1,7 +1,7 @@
 {
   "name": "not-mongoose",
-  "version": "1.0.1",
-  "description": "Simple remake of Mongoose that stores data in local JSON files",
+  "version": "1.0.2",
+  "description": "Remake of [Mongoose](https://mongoosejs.com/) that manages data in memory and stores it in local JSON files",
   "main": "index.js",
   "dependencies": {
     "uuid": "^3.3.3"

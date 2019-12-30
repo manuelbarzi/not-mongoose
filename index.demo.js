@@ -1,9 +1,4 @@
-# Remake of [Mongoose](https://mongoosejs.com/) that manages data in memory and stores it in local JSON files
-
-## Usage
-
-```js
-const mongoose = require('not-mongoose')
+const mongoose = require('.')
 const { Schema, ObjectId, model } = mongoose
 const path = require('path')
 
@@ -87,4 +82,3 @@ const Task = model('Task', new Schema({
 		console.error(error)
 	}
 })()
-```
