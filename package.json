@@ -1,6 +1,6 @@
 {
   "name": "not-mongoose",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Remake of [Mongoose](https://mongoosejs.com/) that manages data in memory and stores it in local JSON files",
   "main": "index.js",
   "dependencies": {
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/manuelbarzi/not-mongoose.git"
   },
   "keywords": ["not", "mongoose", "not-mongoose", "odm", "mongo", "simple", "remake"],
-  "author": "",
+  "author": "manuelbarzi",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/manuelbarzi/not-mongoose/issues"
